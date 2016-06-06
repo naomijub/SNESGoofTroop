@@ -1,0 +1,24 @@
+{
+    	name: "level1",
+    	rectangles: [
+      	{x: 0, y: 0, width: 768, height: 96},
+        {x: 0, y: 0, width: 48, height: 672},
+        {x: 720, y: 0, width: 48, height: 672},
+        {x: 48, y: 624, width: 288, height: 48},
+        {x: 432, y: 624, width: 288, height: 48},
+        {x: 96, y: 96, width: 192, height: 48},
+        {x: 480, y: 96, width: 192, height: 48},
+        {x: 48, y: 96, width: 48, height: 144},
+        {x: 288, y: 96, width: 48, height: 144},
+        {x: 432, y: 96, width: 48, height: 144},
+        {x: 672, y: 96, width: 48, height: 144},
+        {x: 144, y: 192, width: 96, height: 48},
+        {x: 624, y: 336, width: 48, height: 336},
+        {x: 288, y: 288, width: 48, height: 48},
+        {x: 48, y: 384, width: 48, height: 48},
+        {x: 192, y: 432, width: 48, height: 48},
+        {x: 144, y: 366, width: 48, height: 48},
+        {x: 432, y: 288, width: 48, height: 48},
+        {x: 480, y: 432, width: 48, height: 48}
+      ]
+    }
