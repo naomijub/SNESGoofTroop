@@ -15,6 +15,12 @@ namespace GoofTroopRemake.JSON
         public int height { get; set; }
         public Rectangle collisionRegion { get; set; }
 
+        public RectangleObjects() { }
+
+        public RectangleObjects(int x, int y, int width, int height) {
+            collisionRegion = new Rectangle(x, y, width, height);
+        }
+
         public void setRectangle() {
             collisionRegion = new Rectangle(x, y, width, height);
         }

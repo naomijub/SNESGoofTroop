@@ -10,7 +10,8 @@ namespace GoofTroopRemake.Actor
 {
     public abstract class Actor
     {
-        public enum ActorState { idle, moveUp, moveDown, moveLeft, moveRight} 
+        public enum ActorState { idleUp, idleDown, idleRight, idleLeft,
+            moveUp, moveDown, moveLeft, moveRight} 
         
         public Vector2 position { get; set; }
         public Vector2 instantMovement { get; set; }
@@ -19,7 +20,7 @@ namespace GoofTroopRemake.Actor
 
         public Actor(Texture2D texture)
         {
-            actorState = ActorState.idle;
+            actorState = ActorState.idleUp;
             this.texture = texture;
         }
 

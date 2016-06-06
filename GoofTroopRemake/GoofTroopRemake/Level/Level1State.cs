@@ -21,7 +21,8 @@ namespace GoofTroopRemake.Level
         SoundEffectInstance levelSndInstance;
         private StateManager.StateManager state;
         private IList<Actor.Actor> actors;
-        private JSON.Level rectangles;
+        private IList<RectangleObjects> rectangles;
+        Rectangle resetRectangle;
 
         public Level1State(StateManager.StateManager state) {
             this.state = state;
@@ -39,13 +40,18 @@ namespace GoofTroopRemake.Level
 
         public void Enter()
         {
-            levelSndInstance = levelSnd.CreateInstance();
-            levelSndInstance.Play();
+            //levelSndInstance = levelSnd.CreateInstance();
+            //levelSndInstance.Play();
+            rectangles = state.levelManager.levels[0].rectangles;
+            //gate
+            rectangles.Add(new RectangleObjects(336, 192, 98, 48));
+            //reset
+            resetRectangle = new Rectangle(336, 662, 98, 10);
         }
 
         public void Leave()
         {
-            levelSndInstance.Stop();
+            //levelSndInstance.Stop();
         }
 
         public void LoadContent(ContentManager content)
@@ -54,16 +60,23 @@ namespace GoofTroopRemake.Level
             level1 = content.Load<Texture2D>("level1");
             levelSnd = content.Load<SoundEffect>("levelSnd");
 
-            actors.Add(new Max(content.Load<Texture2D>("maxSpriteSheet")));
+            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite")));
         }
 
         public void Update(GameTime gameTime, InputHandler inputHandler)
         {
-           
-        }
-
-        public void LoadRectangles(JSON.Level rectangles) {
-            this.rectangles = rectangles;
+            bool collide = false;
+            actors[0].Update(gameTime, inputHandler);
+            Max aux = (Max)actors[0];
+            foreach (RectangleObjects ro in rectangles) {
+                if (aux.maxRectangle.Intersects(ro.collisionRegion)) {
+                    collide = true;
+                }
+            }
+            if (!collide) { actors[0].move(); }
+            if (aux.maxRectangle.Intersects(resetRectangle)) {
+                state.ChangeState(new MainMenuState(state));
+            }
         }
     }
 }

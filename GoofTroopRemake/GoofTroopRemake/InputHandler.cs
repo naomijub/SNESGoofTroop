@@ -46,5 +46,10 @@ namespace GoofTroopRemake
         {
             return currentKeyboardState.IsKeyDown(k) && previousKeyboardState.IsKeyUp(k);
         }
+
+        public bool KeyDown(Keys k)
+        {
+            return currentKeyboardState.IsKeyDown(k);
+        }
     }
 }

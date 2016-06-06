@@ -62,6 +62,7 @@ namespace GoofTroopRemake
             stateManager = new StateManager.StateManager(Content, inputHandler);
             stateManager.setPrimaryState(new MainMenuState(stateManager));
             levelManager = new LevelManager();
+            stateManager.setLevelManager(levelManager);
             // TODO: use this.Content to load your game content here
         }
 
