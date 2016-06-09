@@ -10,23 +10,27 @@ namespace GoofTroopRemake.Actor
 {
     public abstract class Actor
     {
-        public enum ActorState { idleUp, idleDown, idleRight, idleLeft,
-            moveUp, moveDown, moveLeft, moveRight} 
-        
+        public enum ActorState
+        {
+            idle,
+            moveUp, moveDown, moveLeft, moveRight
+        }
+
+        public ActorState actorState { get; set; }
         public Vector2 position { get; set; }
         public Vector2 instantMovement { get; set; }
         public Texture2D texture { get; set; }
-        public ActorState actorState { get; set; }
+
 
         public Actor(Texture2D texture)
         {
-            actorState = ActorState.idleUp;
             this.texture = texture;
+            actorState = ActorState.idle;
         }
 
-        public abstract void move();
         public abstract void attack();
         public abstract void die();
+        public abstract void move();
         public abstract void Draw(SpriteBatch sb, GameTime gameTime);
         public abstract void Update(GameTime gameTime, InputHandler inputHandler);
     }

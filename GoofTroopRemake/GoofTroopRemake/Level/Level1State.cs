@@ -23,6 +23,7 @@ namespace GoofTroopRemake.Level
         private IList<Actor.Actor> actors;
         private IList<RectangleObjects> rectangles;
         Rectangle resetRectangle;
+        Collision collide;
 
         public Level1State(StateManager.StateManager state) {
             this.state = state;
@@ -47,6 +48,8 @@ namespace GoofTroopRemake.Level
             rectangles.Add(new RectangleObjects(336, 192, 98, 48));
             //reset
             resetRectangle = new Rectangle(336, 662, 98, 10);
+
+            collide = new Collision(rectangles, actors, state);
         }
 
         public void Leave()
@@ -60,23 +63,18 @@ namespace GoofTroopRemake.Level
             level1 = content.Load<Texture2D>("level1");
             levelSnd = content.Load<SoundEffect>("levelSnd");
 
-            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite")));
+           
+            actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(288, 336)));
+            actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(432, 336)));
+            actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(624, 288)));
+            actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(576, 480)));
+            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite"), content.Load<Texture2D>("MaxKickSprite")));
+
         }
 
         public void Update(GameTime gameTime, InputHandler inputHandler)
         {
-            bool collide = false;
-            actors[0].Update(gameTime, inputHandler);
-            Max aux = (Max)actors[0];
-            foreach (RectangleObjects ro in rectangles) {
-                if (aux.maxRectangle.Intersects(ro.collisionRegion)) {
-                    collide = true;
-                }
-            }
-            if (!collide) { actors[0].move(); }
-            if (aux.maxRectangle.Intersects(resetRectangle)) {
-                state.ChangeState(new MainMenuState(state));
-            }
+            collide.update(gameTime, inputHandler, resetRectangle);
         }
     }
 }
