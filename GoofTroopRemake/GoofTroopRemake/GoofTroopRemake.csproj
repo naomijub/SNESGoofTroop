@@ -46,6 +46,7 @@
     <Compile Include="Actor\Block.cs" />
     <Compile Include="Actor\Max.cs" />
     <Compile Include="Buttons\Button.cs" />
+    <Compile Include="Components\CheckWin.cs" />
     <Compile Include="Components\Collision.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="InputHandler.cs" />

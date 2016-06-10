@@ -22,18 +22,23 @@ namespace GoofTroopRemake.Level
         private StateManager.StateManager state;
         private IList<Actor.Actor> actors;
         private IList<RectangleObjects> rectangles;
-        Rectangle resetRectangle;
+        Rectangle resetRectangle, keyRectangle;
+        RectangleObjects gateRectangle;
         Collision collide;
+        CheckWin checkWin;
+        bool openGate;
 
         public Level1State(StateManager.StateManager state) {
             this.state = state;
             actors = new List<Actor.Actor>();
+            openGate = false;
         }
 
         public void Draw(SpriteBatch sb, GameTime gameTime)
         {
             sb.Draw(level1, Vector2.Zero, Color.White);
-            sb.Draw(gate, new Vector2(336, 168), Color.White);
+            if(!openGate) sb.Draw(gate, new Vector2(336, 168), Color.White);
+
             foreach (Actor.Actor a in actors) {
                 a.Draw(sb, gameTime);
             }
@@ -45,11 +50,19 @@ namespace GoofTroopRemake.Level
             //levelSndInstance.Play();
             rectangles = state.levelManager.levels[0].rectangles;
             //gate
-            rectangles.Add(new RectangleObjects(336, 192, 98, 48));
+            gateRectangle =new RectangleObjects(336, 192, 98, 48);
+            rectangles.Add(gateRectangle);
             //reset
             resetRectangle = new Rectangle(336, 662, 98, 10);
+            keyRectangle = new Rectangle(360, 96, 48, 72);
 
             collide = new Collision(rectangles, actors, state);
+            IList<Rectangle> winPosition = new List<Rectangle>();
+            winPosition.Add(new Rectangle(95, 143, 50, 50));
+            winPosition.Add(new Rectangle(239, 143, 50, 50));
+            winPosition.Add(new Rectangle(479, 143, 50, 50));
+            winPosition.Add(new Rectangle(623, 143, 50, 50));
+            checkWin = new CheckWin(winPosition, actors);
         }
 
         public void Leave()
@@ -75,6 +88,19 @@ namespace GoofTroopRemake.Level
         public void Update(GameTime gameTime, InputHandler inputHandler)
         {
             collide.update(gameTime, inputHandler, resetRectangle);
+            openGate = checkWin.hasWon();
+
+            if (openGate) {
+                rectangles.Remove(gateRectangle);
+                if (checkWin.gotKey(actors, keyRectangle))
+                {
+                    Console.WriteLine("WIN");
+                    state.ChangeState(new MainMenuState(state));
+                }
+
+            }
+            
+
         }
     }
 }

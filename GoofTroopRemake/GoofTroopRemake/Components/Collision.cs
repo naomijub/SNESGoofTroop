@@ -88,7 +88,6 @@ namespace GoofTroopRemake.Components
             Actor.Actor returnable = null;
             if (kick != Point.Zero)
             {
-                //Console.WriteLine(kick.ToString());
                 foreach (Actor.Actor ac in actors)
                 {
                     if (ac.GetType() == typeof(Block))
@@ -99,7 +98,7 @@ namespace GoofTroopRemake.Components
                         if (auxBlock.collisionRect.Contains(kick.X, kick.Y))
                         {
                             //Console.WriteLine("pluff");
-                           Console.WriteLine((kick - aux.position.ToPoint()).ToString());
+                           //Console.WriteLine((kick - aux.position.ToPoint()).ToString());
                            auxBlock.setDir(CalculateVector(kick - aux.position.ToPoint()));
                            auxBlock.Update(gameTime, inputHandler);
                             returnable = ac;

@@ -12,14 +12,15 @@ namespace GoofTroopRemake.Actor
     public class Max : Actor
     {
         enum IdleState {up, down, right, left }
-        enum Kicker { kick, walk}
+        public enum Kicker { kick, walk}
         private IdleState idle;
         private ActorState auxState;
-        Kicker kickState;
+        public Kicker kickState { get; set; }
 
         Rectangle source;
         public Rectangle maxRectangleY { get; set; }
         public Rectangle maxRectangleX { get; set; }
+        public Rectangle maxRectangle { get; set; }
 
         public int nextMoveY { get; set; }
         public int nextMoveX { get; set; }
@@ -42,9 +43,13 @@ namespace GoofTroopRemake.Actor
         {
             //Console.WriteLine("Draw: x/y " + position.X + "/" + position.Y);
             Color color = Color.White;
-            if (kickState == Kicker.kick) color = Color.Yellow; 
-
-            sb.Draw(texture, position, source, color);     
+            if (kickState == Kicker.walk)
+            {
+                sb.Draw(texture, position, source, color);
+            }
+            else {
+                sb.Draw(maxKickTexture, position, source, color);
+            }
         }
 
         public override void move()
@@ -59,15 +64,17 @@ namespace GoofTroopRemake.Actor
         public void moveY()
         {
             position = new Vector2(position.X, nextMoveY);
+            
         }
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)
         {
             nextMoveY = (int)position.Y;
             nextMoveX = (int)position.X;
-            maxRectangleY = new Rectangle((int)position.X + 11, (int)position.Y + 60, 42, 20);
+            //maxRectangleY = new Rectangle((int)position.X + 11, (int)position.Y + 60, 42, 20);
             NextMoveCalculator(inputHandler);
             variateSprite(gameTime);
+            maxRectangle = new Rectangle(position.ToPoint(), new Point(48, 72));
         }
 
         public void NextMoveCalculator(InputHandler inputHandler) {
@@ -143,9 +150,11 @@ namespace GoofTroopRemake.Actor
                 variateWalking();
             }
             else {
-
+                if (variation >= 3) kickState = Kicker.walk;
+                variateKick();
             }
-            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0) {
+
+            if ((gameTime.TotalGameTime.Milliseconds % 150) == 0) {
                 variation++;
             }
         }
@@ -162,7 +171,18 @@ namespace GoofTroopRemake.Actor
             }
         }
 
+        public void variateKick()
+        {
 
+            int auxVar = 66 * (variation % 3);
+            switch (idle)
+            {
+                case IdleState.up: source = new Rectangle(66 + (auxVar), 190, 66, 95); break;
+                case IdleState.down: source = new Rectangle(66 + (auxVar), 0, 66, 95); break;
+                case IdleState.right: source = new Rectangle(66 + (auxVar), 95, 66, 95); break;
+                case IdleState.left: source = new Rectangle(66 + (auxVar), 285, 66, 95); break;
+            }
+        }
 
         public override void attack()
         {
@@ -177,6 +197,7 @@ namespace GoofTroopRemake.Actor
         public Point Kick(InputHandler inputHandler) {
             if (inputHandler.KeyPressed(Keys.Z)) {
                 //Console.WriteLine(origin.ToString());
+                kickState = Kicker.kick;
                 switch (idle) {
                     case IdleState.up: return new Point((int)position.X + 33, (int)position.Y + 46);
                     case IdleState.down: return new Point((int)position.X + 33, (int)position.Y + 96);

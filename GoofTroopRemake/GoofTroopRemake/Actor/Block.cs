@@ -31,21 +31,21 @@ namespace GoofTroopRemake.Actor
         public override void move()
         {
             position = nextMove;
-            Console.WriteLine(position.ToString());
+            //Console.WriteLine(position.ToString());
         }
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)
         {
             collisionRect = new Rectangle(position.ToPoint(), area);
             nextMove = position + instantMovement;
-            Console.WriteLine(nextMove.ToString());
+            //Console.WriteLine(nextMove.ToString());
             nextRectangle = new Rectangle(nextMove.ToPoint(), area);
             //Console.WriteLine(nextRectangle.ToString());
         }
 
         public void setDir(Point kickVect) {
             instantMovement = kickVect.ToVector2();
-            Console.WriteLine(kickVect.ToString() + " Inst move " + instantMovement.ToString());
+            //Console.WriteLine(kickVect.ToString() + " Inst move " + instantMovement.ToString());
         }
 
         public void hasCollide() {
