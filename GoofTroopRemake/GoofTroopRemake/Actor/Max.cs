@@ -139,10 +139,13 @@ namespace GoofTroopRemake.Actor
         }
 
         public void variateSprite(GameTime gameTime) {
-            if (auxState != actorState)
+            if (auxState != actorState && kickState == Kicker.walk)
             {
                 variation = 0;
                 auxState = actorState;
+            }
+            else if (kickState == Kicker.kick && variation > 3) {
+                variation = 0;
             }
 
             if (kickState == Kicker.walk)
@@ -177,10 +180,10 @@ namespace GoofTroopRemake.Actor
             int auxVar = 66 * (variation % 3);
             switch (idle)
             {
-                case IdleState.up: source = new Rectangle(66 + (auxVar), 190, 66, 95); break;
-                case IdleState.down: source = new Rectangle(66 + (auxVar), 0, 66, 95); break;
-                case IdleState.right: source = new Rectangle(66 + (auxVar), 95, 66, 95); break;
-                case IdleState.left: source = new Rectangle(66 + (auxVar), 285, 66, 95); break;
+                case IdleState.up: source = new Rectangle((auxVar), 190, 66, 95); break;
+                case IdleState.down: source = new Rectangle((auxVar), 0, 66, 95); break;
+                case IdleState.right: source = new Rectangle((auxVar), 95, 66, 95); break;
+                case IdleState.left: source = new Rectangle((auxVar), 285, 66, 95); break;
             }
         }
 

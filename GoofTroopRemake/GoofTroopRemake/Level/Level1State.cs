@@ -46,11 +46,11 @@ namespace GoofTroopRemake.Level
 
         public void Enter()
         {
-            //levelSndInstance = levelSnd.CreateInstance();
-            //levelSndInstance.Play();
+            levelSndInstance = levelSnd.CreateInstance();
+            levelSndInstance.Play();
             rectangles = state.levelManager.levels[0].rectangles;
             //gate
-            gateRectangle =new RectangleObjects(336, 192, 98, 48);
+            gateRectangle = new RectangleObjects(336, 192, 72, 48);
             rectangles.Add(gateRectangle);
             //reset
             resetRectangle = new Rectangle(336, 662, 98, 10);
@@ -67,7 +67,7 @@ namespace GoofTroopRemake.Level
 
         public void Leave()
         {
-            //levelSndInstance.Stop();
+            levelSndInstance.Stop();
         }
 
         public void LoadContent(ContentManager content)
