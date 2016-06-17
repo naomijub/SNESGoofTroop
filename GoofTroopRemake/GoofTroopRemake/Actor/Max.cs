@@ -11,9 +11,9 @@ namespace GoofTroopRemake.Actor
 {
     public class Max : Actor
     {
-        enum IdleState {up, down, right, left }
-        public enum Kicker { kick, walk}
-        private IdleState idle;
+        public enum IdleState { up, down, right, left }
+        public enum Kicker { kick, walk }
+        public IdleState idle { get; set; }
         private ActorState auxState;
         public Kicker kickState { get; set; }
 
@@ -26,9 +26,10 @@ namespace GoofTroopRemake.Actor
         public int nextMoveX { get; set; }
 
         Texture2D maxKickTexture;
-        private int variation = 0;
+        private int variation = 0, auxKick = 0;
 
-        public Max(Texture2D texture, Texture2D maxKickTexture) : base(texture) {
+        public Max(Texture2D texture, Texture2D maxKickTexture) : base(texture)
+        {
             this.maxKickTexture = maxKickTexture;
             source = new Rectangle(0, 164, 66, 82);
             position = new Vector2(370, 570);
@@ -37,18 +38,18 @@ namespace GoofTroopRemake.Actor
             auxState = ActorState.idle;
             kickState = Kicker.walk;
             Console.WriteLine(" Max Created ");
-        } 
+        }
 
         public override void Draw(SpriteBatch sb, GameTime gameTime)
         {
             //Console.WriteLine("Draw: x/y " + position.X + "/" + position.Y);
-            Color color = Color.White;
+
             if (kickState == Kicker.walk)
             {
-                sb.Draw(texture, position, source, color);
+                sb.Draw(texture, position, source, Color.White);
             }
             else {
-                sb.Draw(maxKickTexture, position, source, color);
+                sb.Draw(maxKickTexture, position, source, Color.White);
             }
         }
 
@@ -57,59 +58,66 @@ namespace GoofTroopRemake.Actor
             position = new Vector2(nextMoveX, nextMoveY);
         }
 
-        public void moveX() {
+        public void moveX()
+        {
             position = new Vector2(nextMoveX, position.Y);
         }
 
         public void moveY()
         {
             position = new Vector2(position.X, nextMoveY);
-            
+
         }
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)
         {
             nextMoveY = (int)position.Y;
             nextMoveX = (int)position.X;
-            //maxRectangleY = new Rectangle((int)position.X + 11, (int)position.Y + 60, 42, 20);
             NextMoveCalculator(inputHandler);
             variateSprite(gameTime);
             maxRectangle = new Rectangle(position.ToPoint(), new Point(48, 72));
         }
 
-        public void NextMoveCalculator(InputHandler inputHandler) {
+        public void NextMoveCalculator(InputHandler inputHandler)
+        {
 
-            if (inputHandler.KeyDown(Keys.Up))
+            if (kickState == Kicker.kick)
             {
-                nextMoveY += -4;
-                actorState = ActorState.moveUp;
-                idle = IdleState.up;
-            }
-            if (inputHandler.KeyDown(Keys.Down))
-            {
-                nextMoveY += 4;
-                actorState = ActorState.moveDown;
-                idle = IdleState.down;
-            }
-            if (inputHandler.KeyDown(Keys.Right))
-            {
-                
-                nextMoveX += 4;
-                actorState = ActorState.moveRight;
-                idle = IdleState.right;
-            }
-            if (inputHandler.KeyDown(Keys.Left))
-            {
-                nextMoveX += -4;
-                actorState = ActorState.moveLeft;
-                idle = IdleState.left;
-            }
-            if(!inputHandler.KeyDown(Keys.Up) && !inputHandler.KeyDown(Keys.Down) &&
-                !inputHandler.KeyDown(Keys.Right) && !inputHandler.KeyDown(Keys.Left)) {
                 actorState = ActorState.idle;
-                determineSourceIdle();
             }
+            else {
+                if (inputHandler.KeyDown(Keys.Up))
+                {
+                    nextMoveY += -4;
+                    actorState = ActorState.moveUp;
+                    idle = IdleState.up;
+                }
+                if (inputHandler.KeyDown(Keys.Down))
+                {
+                    nextMoveY += 4;
+                    actorState = ActorState.moveDown;
+                    idle = IdleState.down;
+                }
+                if (inputHandler.KeyDown(Keys.Right))
+                {
 
+                    nextMoveX += 4;
+                    actorState = ActorState.moveRight;
+                    idle = IdleState.right;
+                }
+                if (inputHandler.KeyDown(Keys.Left))
+                {
+                    nextMoveX += -4;
+                    actorState = ActorState.moveLeft;
+                    idle = IdleState.left;
+                }
+                if (!inputHandler.KeyDown(Keys.Up) && !inputHandler.KeyDown(Keys.Down) &&
+                    !inputHandler.KeyDown(Keys.Right) && !inputHandler.KeyDown(Keys.Left))
+                {
+                    actorState = ActorState.idle;
+                    determineSourceIdle();
+                }
+            }
             maxRectangleY = new Rectangle((int)position.X + 11, nextMoveY + 60, 42, 20);
             maxRectangleX = new Rectangle(nextMoveX + 11, (int)position.Y + 60, 42, 20);
         }
@@ -138,13 +146,15 @@ namespace GoofTroopRemake.Actor
             }
         }
 
-        public void variateSprite(GameTime gameTime) {
+        public void variateSprite(GameTime gameTime)
+        {
             if (auxState != actorState && kickState == Kicker.walk)
             {
                 variation = 0;
                 auxState = actorState;
             }
-            else if (kickState == Kicker.kick && variation > 3) {
+            else if (kickState == Kicker.kick && variation > 3)
+            {
                 variation = 0;
             }
 
@@ -153,17 +163,18 @@ namespace GoofTroopRemake.Actor
                 variateWalking();
             }
             else {
-                if (variation >= 3) kickState = Kicker.walk;
-                variateKick();
+                variateKick(gameTime);
             }
 
-            if ((gameTime.TotalGameTime.Milliseconds % 150) == 0) {
+            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0)
+            {
                 variation++;
             }
         }
 
-        public void variateWalking() {
-            
+        public void variateWalking()
+        {
+
             int auxVar = 66 * ((variation % 5) + 1);
             switch (auxState)
             {
@@ -174,10 +185,11 @@ namespace GoofTroopRemake.Actor
             }
         }
 
-        public void variateKick()
+        public void variateKick(GameTime gameTime)
         {
 
-            int auxVar = 66 * (variation % 3);
+            actorState = ActorState.idle;
+            int auxVar = 66 * (auxKick % 3);
             switch (idle)
             {
                 case IdleState.up: source = new Rectangle((auxVar), 190, 66, 95); break;
@@ -185,30 +197,59 @@ namespace GoofTroopRemake.Actor
                 case IdleState.right: source = new Rectangle((auxVar), 95, 66, 95); break;
                 case IdleState.left: source = new Rectangle((auxVar), 285, 66, 95); break;
             }
+
+            if ((gameTime.TotalGameTime.Milliseconds % 75) == 0) auxKick++;
+
+            if (auxKick >= 3)
+            {
+                kickState = Kicker.walk;
+                auxKick = 0;
+            }
+
+
         }
 
         public override void attack()
         {
-            
+
         }
 
         public override void die()
         {
-            
+
         }
 
-        public Point Kick(InputHandler inputHandler) {
-            if (inputHandler.KeyPressed(Keys.Z)) {
+        public Point Kick(InputHandler inputHandler)
+        {
+            if (inputHandler.KeyPressed(Keys.Z))
+            {
                 //Console.WriteLine(origin.ToString());
                 kickState = Kicker.kick;
-                switch (idle) {
+                switch (idle)
+                {
                     case IdleState.up: return new Point((int)position.X + 33, (int)position.Y + 46);
                     case IdleState.down: return new Point((int)position.X + 33, (int)position.Y + 96);
                     case IdleState.right: return new Point(58 + (int)position.X, (int)position.Y + 71);
-                    case IdleState.left:  return new Point(8 + (int)position.X, (int)position.Y + 71);
+                    case IdleState.left: return new Point(8 + (int)position.X, (int)position.Y + 71);
                 }
             }
             return Point.Zero;
+        }
+
+        public Point Grab(InputHandler inputHandler)
+        {
+            if (inputHandler.KeyPressed(Keys.X))
+            {
+                switch (idle)
+                {
+                    case IdleState.up: return new Point((int)position.X + 33, (int)position.Y + 46);
+                    case IdleState.down: return new Point((int)position.X + 33, (int)position.Y + 96);
+                    case IdleState.right: return new Point(58 + (int)position.X, (int)position.Y + 71);
+                    case IdleState.left: return new Point(8 + (int)position.X, (int)position.Y + 71);
+                }
+            }
+            return Point.Zero;
+        
         }
     }
 }

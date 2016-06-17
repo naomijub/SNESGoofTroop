@@ -52,6 +52,26 @@ namespace GoofTroopRemake.Components
                     auxBlock.Update(gameTime, inputHandler);
                     collideBlocks(gameTime, inputHandler);
                 }
+                if (actors[i].GetType() == typeof(Rock)) {
+                    Rock rock = (Rock)actors[i];
+                    if (rock.throwed) {
+                        collideRock(rock, gameTime, inputHandler);
+                    }
+                }
+            }
+        }
+
+        public void collideRock(Rock rock, GameTime gameTime, InputHandler inputHandler) {
+            bool collide = false;
+            Rectangle gameArea = new Rectangle(0, 0, 768, 672);
+            if (!gameArea.Contains(rock.position.ToPoint())) {
+                collide = true;
+                actors.Remove(rock);
+            }
+            if (!collide) {
+                rock.Update(gameTime, inputHandler);
+                rock.move(gameTime);
+                
             }
         }
 
@@ -159,6 +179,21 @@ namespace GoofTroopRemake.Components
                         collideX = true;
                     }
                     if (auxMax.maxRectangleY.Intersects(auxBlock.collisionRect))
+                    {
+                        //Console.WriteLine("Collide y");
+                        collideY = true;
+                    }
+                }
+                if (ac.GetType() == typeof(Rock))
+                {
+                    //Console.WriteLine(ac.GetType());
+                    Rock auxRock = (Rock)ac;
+                    if (auxMax.maxRectangleX.Intersects(auxRock.collisionRect))
+                    {
+                        //Console.WriteLine("Collide x");
+                        collideX = true;
+                    }
+                    if (auxMax.maxRectangleY.Intersects(auxRock.collisionRect))
                     {
                         //Console.WriteLine("Collide y");
                         collideY = true;

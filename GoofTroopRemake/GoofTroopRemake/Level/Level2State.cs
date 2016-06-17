@@ -55,14 +55,14 @@ namespace GoofTroopRemake.Level
             rectangles.Add(gateRectangle);
             //reset
             resetRectangle = new Rectangle(336, 662, 98, 10);
-            keyRectangle = new Rectangle(360, 96, 48, 72);
+            keyRectangle = new Rectangle(360, 96, 48, 48);
 
             collide = new Collision(rectangles, actors, state);
             IList<Rectangle> winPosition = new List<Rectangle>();
             winPosition.Add(new Rectangle(143, 143, 50, 50));
             winPosition.Add(new Rectangle(191, 143, 50, 50));
             winPosition.Add(new Rectangle(527, 143, 50, 50));
-            winPosition.Add(new Rectangle(675, 143, 50, 50));
+            winPosition.Add(new Rectangle(575, 143, 50, 50));
             winPosition.Add(new Rectangle(335, 383, 50, 50));
             winPosition.Add(new Rectangle(383, 383, 50, 50));
             checkWin = new CheckWin(winPosition, actors);
