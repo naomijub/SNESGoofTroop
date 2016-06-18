@@ -27,11 +27,13 @@ namespace GoofTroopRemake.Level
         Collision collide;
         CheckWin checkWin;
         bool openGate;
+        InputHandler inputHandler;
 
-        public Level1State(StateManager.StateManager state) {
+        public Level1State(StateManager.StateManager state, InputHandler inputHandler) {
             this.state = state;
             actors = new List<Actor.Actor>();
             openGate = false;
+            this.inputHandler = inputHandler;
         }
 
         public void Draw(SpriteBatch sb, GameTime gameTime)
@@ -81,7 +83,7 @@ namespace GoofTroopRemake.Level
             actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(432, 336)));
             actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(624, 288)));
             actors.Add(new Block(content.Load<Texture2D>("block"), new Vector2(576, 480)));
-            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite"), content.Load<Texture2D>("MaxKickSprite")));
+            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite"), content, inputHandler));
 
         }
 

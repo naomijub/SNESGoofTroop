@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Audio;
 using GoofTroopRemake.JSON;
 using GoofTroopRemake.Actor;
 using GoofTroopRemake.StateManager;
+using GoofTroopRemake.MaxStates;
+using Microsoft.Xna.Framework.Input;
 
 namespace GoofTroopRemake.Components
 {
@@ -117,10 +119,9 @@ namespace GoofTroopRemake.Components
                         //Console.WriteLine(auxBlock.collisionRect.Intersects(new Rectangle(kick, new Point(10, 10))));
                         if (auxBlock.collisionRect.Contains(kick.X, kick.Y))
                         {
-                            //Console.WriteLine("pluff");
-                           //Console.WriteLine((kick - aux.position.ToPoint()).ToString());
-                           auxBlock.setDir(CalculateVector(kick - aux.position.ToPoint()));
-                           auxBlock.Update(gameTime, inputHandler);
+                            aux.state.ChangeState(new KickState(aux.state, aux));
+                            auxBlock.setDir(CalculateVector(kick - aux.position.ToPoint()));
+                            auxBlock.Update(gameTime, inputHandler);
                             returnable = ac;
 
                         }

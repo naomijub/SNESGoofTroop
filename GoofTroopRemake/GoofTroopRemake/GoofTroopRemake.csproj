@@ -58,6 +58,10 @@
     <Compile Include="Level\Level1State.cs" />
     <Compile Include="Level\Level2State.cs" />
     <Compile Include="Level\Level3State.cs" />
+    <Compile Include="MaxStates\GrabState.cs" />
+    <Compile Include="MaxStates\KickState.cs" />
+    <Compile Include="MaxStates\ThrowState.cs" />
+    <Compile Include="MaxStates\WalkingState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\State.cs" />

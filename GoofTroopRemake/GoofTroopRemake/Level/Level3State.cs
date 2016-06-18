@@ -27,11 +27,13 @@ namespace GoofTroopRemake.Level
         Collision collide;
         GrabThrow grabThrow;
         bool openGate;
+        InputHandler inputHandler;
 
-        public Level3State(StateManager.StateManager state) {
+        public Level3State(StateManager.StateManager state, InputHandler inputHandler) {
             this.state = state;
             actors = new List<Actor.Actor>();
             openGate = false;
+            this.inputHandler = inputHandler;
         }
 
         public void Draw(SpriteBatch sb, GameTime gameTime)
@@ -47,8 +49,8 @@ namespace GoofTroopRemake.Level
 
         public void Enter()
         {
-            levelSndInstance = levelSnd.CreateInstance();
-            levelSndInstance.Play();
+            //levelSndInstance = levelSnd.CreateInstance();
+            //levelSndInstance.Play();
             rectangles = state.levelManager.levels[2].rectangles;
             //gate
             gateRectangle = new RectangleObjects(336, 24, 96, 72);
@@ -61,7 +63,7 @@ namespace GoofTroopRemake.Level
 
         public void Leave()
         {
-            levelSndInstance.Stop();
+            //levelSndInstance.Stop();
         }
 
         public void LoadContent(ContentManager content)
@@ -75,7 +77,7 @@ namespace GoofTroopRemake.Level
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(72, 576)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(336, 240)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(648, 96)));
-            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite"), content.Load<Texture2D>("MaxKickSprite")));
+            actors.Add(new Max(content.Load<Texture2D>("MaxWalkingSprite"), content, inputHandler));
             
         }
 

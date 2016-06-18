@@ -50,15 +50,15 @@ namespace GoofTroopRemake.StateManager
         {
             if (lvl1Button.update(inputHandler))
             {
-                state.ChangeState(new Level1State(state));
+                state.ChangeState(new Level1State(state, inputHandler));
             }
             if (lvl2Button.update(inputHandler))
             {
-                state.ChangeState(new Level2State(state));
+                state.ChangeState(new Level2State(state, inputHandler));
             }
             if (lvl3Button.update(inputHandler))
             {
-                state.ChangeState(new Level3State(state));
+                state.ChangeState(new Level3State(state, inputHandler));
             }
         }
 

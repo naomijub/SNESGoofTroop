@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using GoofTroopRemake.StateManager;
+using GoofTroopRemake.MaxStates;
+using GoofTroopRemake.Components;
+using Microsoft.Xna.Framework.Content;
 
 namespace GoofTroopRemake.Actor
 {
@@ -14,10 +18,10 @@ namespace GoofTroopRemake.Actor
         public enum IdleState { up, down, right, left }
         public enum Kicker { kick, walk }
         public IdleState idle { get; set; }
-        private ActorState auxState;
-        public Kicker kickState { get; set; }
 
-        Rectangle source;
+        public StateManager.StateManager state { get; set; }
+
+        public Rectangle source { get; set; }
         public Rectangle maxRectangleY { get; set; }
         public Rectangle maxRectangleX { get; set; }
         public Rectangle maxRectangle { get; set; }
@@ -25,32 +29,20 @@ namespace GoofTroopRemake.Actor
         public int nextMoveY { get; set; }
         public int nextMoveX { get; set; }
 
-        Texture2D maxKickTexture;
-        private int variation = 0, auxKick = 0;
-
-        public Max(Texture2D texture, Texture2D maxKickTexture) : base(texture)
+        public Max(Texture2D texture, ContentManager content, InputHandler inputHandler) : base(texture)
         {
-            this.maxKickTexture = maxKickTexture;
-            source = new Rectangle(0, 164, 66, 82);
             position = new Vector2(370, 570);
-            instantMovement = Vector2.Zero;
-            idle = IdleState.up;
-            auxState = ActorState.idle;
-            kickState = Kicker.walk;
-            Console.WriteLine(" Max Created ");
+            idle = Max.IdleState.up;
+            source = new Rectangle(0, 164, 66, 82);
+            state = new StateManager.StateManager(content, inputHandler);
+
+            state.setPrimaryState(new WalkingState(state, this));
         }
 
         public override void Draw(SpriteBatch sb, GameTime gameTime)
         {
             //Console.WriteLine("Draw: x/y " + position.X + "/" + position.Y);
-
-            if (kickState == Kicker.walk)
-            {
-                sb.Draw(texture, position, source, Color.White);
-            }
-            else {
-                sb.Draw(maxKickTexture, position, source, Color.White);
-            }
+            state.Draw(sb, gameTime);
         }
 
         public override void move()
@@ -71,144 +63,9 @@ namespace GoofTroopRemake.Actor
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)
         {
-            nextMoveY = (int)position.Y;
-            nextMoveX = (int)position.X;
-            NextMoveCalculator(inputHandler);
-            variateSprite(gameTime);
-            maxRectangle = new Rectangle(position.ToPoint(), new Point(48, 72));
+            state.Update(gameTime);
         }
-
-        public void NextMoveCalculator(InputHandler inputHandler)
-        {
-
-            if (kickState == Kicker.kick)
-            {
-                actorState = ActorState.idle;
-            }
-            else {
-                if (inputHandler.KeyDown(Keys.Up))
-                {
-                    nextMoveY += -4;
-                    actorState = ActorState.moveUp;
-                    idle = IdleState.up;
-                }
-                if (inputHandler.KeyDown(Keys.Down))
-                {
-                    nextMoveY += 4;
-                    actorState = ActorState.moveDown;
-                    idle = IdleState.down;
-                }
-                if (inputHandler.KeyDown(Keys.Right))
-                {
-
-                    nextMoveX += 4;
-                    actorState = ActorState.moveRight;
-                    idle = IdleState.right;
-                }
-                if (inputHandler.KeyDown(Keys.Left))
-                {
-                    nextMoveX += -4;
-                    actorState = ActorState.moveLeft;
-                    idle = IdleState.left;
-                }
-                if (!inputHandler.KeyDown(Keys.Up) && !inputHandler.KeyDown(Keys.Down) &&
-                    !inputHandler.KeyDown(Keys.Right) && !inputHandler.KeyDown(Keys.Left))
-                {
-                    actorState = ActorState.idle;
-                    determineSourceIdle();
-                }
-            }
-            maxRectangleY = new Rectangle((int)position.X + 11, nextMoveY + 60, 42, 20);
-            maxRectangleX = new Rectangle(nextMoveX + 11, (int)position.Y + 60, 42, 20);
-        }
-
-        private void determineSourceIdle()
-        {
-            if (idle == IdleState.up)
-            {
-                source = new Rectangle(0, 164, 66, 82);
-            }
-            else if (idle == IdleState.down)
-            {
-                source = new Rectangle(0, 0, 66, 82);
-            }
-            else if (idle == IdleState.right)
-            {
-                source = new Rectangle(0, 82, 66, 82);
-            }
-            else if (idle == IdleState.left)
-            {
-                source = new Rectangle(0, 246, 66, 82);
-            }
-            else
-            {
-                source = new Rectangle(0, 164, 66, 82);
-            }
-        }
-
-        public void variateSprite(GameTime gameTime)
-        {
-            if (auxState != actorState && kickState == Kicker.walk)
-            {
-                variation = 0;
-                auxState = actorState;
-            }
-            else if (kickState == Kicker.kick && variation > 3)
-            {
-                variation = 0;
-            }
-
-            if (kickState == Kicker.walk)
-            {
-                variateWalking();
-            }
-            else {
-                variateKick(gameTime);
-            }
-
-            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0)
-            {
-                variation++;
-            }
-        }
-
-        public void variateWalking()
-        {
-
-            int auxVar = 66 * ((variation % 5) + 1);
-            switch (auxState)
-            {
-                case ActorState.moveUp: source = new Rectangle(66 + (auxVar), 164, 66, 82); break;
-                case ActorState.moveDown: source = new Rectangle(66 + (auxVar), 0, 66, 82); break;
-                case ActorState.moveRight: source = new Rectangle(66 + (auxVar), 82, 66, 82); break;
-                case ActorState.moveLeft: source = new Rectangle(66 + (auxVar), 246, 66, 82); break;
-            }
-        }
-
-        public void variateKick(GameTime gameTime)
-        {
-
-            actorState = ActorState.idle;
-            int auxVar = 66 * (auxKick % 3);
-            switch (idle)
-            {
-                case IdleState.up: source = new Rectangle((auxVar), 190, 66, 95); break;
-                case IdleState.down: source = new Rectangle((auxVar), 0, 66, 95); break;
-                case IdleState.right: source = new Rectangle((auxVar), 95, 66, 95); break;
-                case IdleState.left: source = new Rectangle((auxVar), 285, 66, 95); break;
-            }
-
-            if ((gameTime.TotalGameTime.Milliseconds % 75) == 0) auxKick++;
-
-            if (auxKick >= 3)
-            {
-                kickState = Kicker.walk;
-                auxKick = 0;
-            }
-
-
-        }
-
+        
         public override void attack()
         {
 
@@ -221,10 +78,8 @@ namespace GoofTroopRemake.Actor
 
         public Point Kick(InputHandler inputHandler)
         {
-            if (inputHandler.KeyPressed(Keys.Z))
+            if (inputHandler.KeyDown(Keys.Z))
             {
-                //Console.WriteLine(origin.ToString());
-                kickState = Kicker.kick;
                 switch (idle)
                 {
                     case IdleState.up: return new Point((int)position.X + 33, (int)position.Y + 46);
@@ -238,7 +93,7 @@ namespace GoofTroopRemake.Actor
 
         public Point Grab(InputHandler inputHandler)
         {
-            if (inputHandler.KeyPressed(Keys.X))
+            if (inputHandler.KeyDown(Keys.X))
             {
                 switch (idle)
                 {

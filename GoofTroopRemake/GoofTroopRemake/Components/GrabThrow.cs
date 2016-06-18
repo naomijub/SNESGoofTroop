@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GoofTroopRemake.MaxStates;
+using Microsoft.Xna.Framework.Input;
 
 namespace GoofTroopRemake.Components
 {
@@ -15,14 +17,17 @@ namespace GoofTroopRemake.Components
 
         public GrabThrow(IList<Actor.Actor> actors) {
             this.actors = actors;
+            rock = null;
         }
 
         public void update(GameTime gameTime, InputHandler inputHandler) {
+            Max max = null;
             for (int i = 0; i < actors.Count; i++) {
                 if (actors[i].GetType() == typeof(Max)) {
-                    Max max = (Max)actors[i];
+                   max = (Max)actors[i];
                     Rock auxRock = (Rock)checkGrab((Max)actors[i], gameTime, inputHandler);
-                    if (auxRock != null) {
+                    if (auxRock != null)
+                    {
                         rock = auxRock;
                         rock.moveUp(actors[i].position);
                         rock.updateRockMax(actors[i].position, max.idle);
@@ -37,7 +42,8 @@ namespace GoofTroopRemake.Components
                 }
             }
             if (rock != null) {
-                if (inputHandler.KeyPressed(Microsoft.Xna.Framework.Input.Keys.C)) {
+                if (inputHandler.KeyDown(Keys.C)) {
+                    max.state.ChangeState(new ThrowState(max.state, max));
                     rock.throwed = true;
                 }
             }
@@ -58,6 +64,7 @@ namespace GoofTroopRemake.Components
                         Console.WriteLine("grabbed");
                         Rock auxRock = (Rock)ac;
                         if (auxRock.collisionRect.Contains(grab)) {
+                            aux.state.ChangeState(new GrabState(aux, aux.state));
                             returnable = ac;
                         }
                     }
