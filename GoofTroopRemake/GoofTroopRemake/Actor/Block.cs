@@ -54,14 +54,9 @@ namespace GoofTroopRemake.Actor
         }
 
 
-        public override void attack()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void die()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

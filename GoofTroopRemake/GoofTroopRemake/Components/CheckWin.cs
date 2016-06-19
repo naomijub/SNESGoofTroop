@@ -24,6 +24,10 @@ namespace GoofTroopRemake.Components
             setCompleted();
         }
 
+        public CheckWin(IList<Actor.Actor> actors) {
+            this.actors = actors;
+        }
+
         public bool hasWon() {
             int count = 0;
             foreach (Actor.Actor ac in actors) {
@@ -74,6 +78,19 @@ namespace GoofTroopRemake.Components
                 }
             }
             return false;
+        }
+
+        public bool allKilled() {
+            bool allDead = true;
+            foreach (Actor.Actor ac in actors) {
+                if (ac.GetType() == typeof(Enemy)) {
+                    Enemy enemy = (Enemy)ac;
+                    if (enemy.alive) {
+                        allDead = false;
+                    }
+                }
+            }
+            return allDead;
         }
     }
 }

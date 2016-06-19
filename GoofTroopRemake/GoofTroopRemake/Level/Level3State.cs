@@ -28,6 +28,10 @@ namespace GoofTroopRemake.Level
         GrabThrow grabThrow;
         bool openGate;
         InputHandler inputHandler;
+        Patroling patrol;
+        RockHit rockHit;
+        CheckWin checkWin;
+        Pursue pursue;
 
         public Level3State(StateManager.StateManager state, InputHandler inputHandler) {
             this.state = state;
@@ -49,8 +53,8 @@ namespace GoofTroopRemake.Level
 
         public void Enter()
         {
-            //levelSndInstance = levelSnd.CreateInstance();
-            //levelSndInstance.Play();
+            levelSndInstance = levelSnd.CreateInstance();
+            levelSndInstance.Play();
             rectangles = state.levelManager.levels[2].rectangles;
             //gate
             gateRectangle = new RectangleObjects(336, 24, 96, 72);
@@ -59,11 +63,16 @@ namespace GoofTroopRemake.Level
             resetRectangle = new Rectangle(336, 662, 98, 10);
             collide = new Collision(rectangles, actors, state);
             grabThrow = new GrabThrow(actors);
+            patrol = new Patroling(rectangles, actors, resetRectangle);
+            rockHit = new RockHit(actors, grabThrow);
+            checkWin = new CheckWin(actors);
+            pursue = new Pursue(actors, state);
+
         }
 
         public void Leave()
         {
-            //levelSndInstance.Stop();
+            levelSndInstance.Stop();
         }
 
         public void LoadContent(ContentManager content)
@@ -72,6 +81,10 @@ namespace GoofTroopRemake.Level
             levelSnd = content.Load<SoundEffect>("levelSnd");
             gate = content.Load<Texture2D>("Gate");
 
+            
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 256), content, inputHandler));
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 384), content, inputHandler));
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(360, 96), content, inputHandler));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(672, 528)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(672, 576)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(72, 576)));
@@ -84,8 +97,24 @@ namespace GoofTroopRemake.Level
         public void Update(GameTime gameTime, InputHandler inputHandler)
         {
             collide.update(gameTime, inputHandler, resetRectangle);
+            patrol.Update(gameTime, inputHandler);
             grabThrow.update(gameTime, inputHandler);
+            rockHit.Update(gameTime, inputHandler);
+            pursue.foundMax();
+            openGate = checkWin.allKilled();
 
+            if (openGate) {
+                rectangles.Remove(gateRectangle);
+                victorious();
+            }
+        }
+
+        public void victorious() {
+            Max max = (Max)actors.Last<Actor.Actor>();
+            if (max.maxRectangle.Intersects(gateRectangle.collisionRegion)) {
+
+                state.ChangeState(new YouWinState());
+            }
         }
     }
 }

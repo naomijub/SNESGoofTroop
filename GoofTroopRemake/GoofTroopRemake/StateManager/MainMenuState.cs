@@ -37,13 +37,13 @@ namespace GoofTroopRemake.StateManager
 
         public  void Enter()
         {
-            //selectorSndInstance = selectorSnd.CreateInstance();
-           // selectorSndInstance.Play();
+            selectorSndInstance = selectorSnd.CreateInstance();
+            selectorSndInstance.Play();
         }
 
         public  void Leave()
         {
-            //selectorSndInstance.Stop();
+            selectorSndInstance.Stop();
         }
 
         public  void Update(GameTime gameTime, InputHandler inputHandler)

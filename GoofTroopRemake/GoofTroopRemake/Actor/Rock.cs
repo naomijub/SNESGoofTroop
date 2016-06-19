@@ -30,11 +30,6 @@ namespace GoofTroopRemake.Actor
             throwed = false;
         }
 
-        public override void attack()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void die()
         {
             draw = false;
@@ -78,7 +73,7 @@ namespace GoofTroopRemake.Actor
                 if (throwed)
                 {
                     move(gameTime);
-                    Vector2 nextPosition = (position + nextMove) + new Vector2(-9, 43);
+                    Vector2 nextPosition = (position + nextMove) + new Vector2(-9, 35);
                     nextRectangle = new Rectangle(nextPosition.ToPoint(), new Point(20, 20));
                 }
                 else {
@@ -89,7 +84,7 @@ namespace GoofTroopRemake.Actor
         }
 
         public void updateRockMax(Vector2 maxPos, Max.IdleState dir) {
-            position = new Vector2(9 + maxPos.X, maxPos.Y - 43);
+            position = new Vector2(9 + maxPos.X, maxPos.Y - 35);
             switch (dir) {
                 case Max.IdleState.up: nextMove = new Vector2(0, -4); horizontal = false;  break;
                 case Max.IdleState.down: nextMove = new Vector2(0, 4); horizontal = false; break;
@@ -101,7 +96,8 @@ namespace GoofTroopRemake.Actor
         }
 
         public void moveUp(Vector2 maxPos) {
-            position = new Vector2(9 + maxPos.X, maxPos.Y - 43);
+            position = new Vector2(9 + maxPos.X, maxPos.Y - 35);
+            collisionRect = Rectangle.Empty;
             steady = false;
             throwed = false;
         }
@@ -112,7 +108,7 @@ namespace GoofTroopRemake.Actor
 
         public override void move()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

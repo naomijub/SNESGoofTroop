@@ -65,11 +65,6 @@ namespace GoofTroopRemake.Actor
         {
             state.Update(gameTime);
         }
-        
-        public override void attack()
-        {
-
-        }
 
         public override void die()
         {

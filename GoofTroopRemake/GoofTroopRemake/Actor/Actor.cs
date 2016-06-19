@@ -28,7 +28,7 @@ namespace GoofTroopRemake.Actor
             actorState = ActorState.idle;
         }
 
-        public abstract void attack();
+
         public abstract void die();
         public abstract void move();
         public abstract void Draw(SpriteBatch sb, GameTime gameTime);
