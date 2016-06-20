@@ -14,7 +14,7 @@ namespace GoofTroopRemake.StateManager
 {
     public class StateManager
     {
-        State state;
+        public State state { get; set; }
         bool hasCalledEnter = false;
         ContentManager content;
         InputHandler inputHandler;

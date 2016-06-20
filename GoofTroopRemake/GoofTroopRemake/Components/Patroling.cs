@@ -37,22 +37,98 @@ namespace GoofTroopRemake.Components
                 if (actors[i].GetType() == typeof(Enemy))
                 {
                     Enemy enemy = (Enemy)actors[i];
-                        actors[i].Update(gameTime, inputHandler);
+                    actors[i].Update(gameTime, inputHandler);
+                    PatrolState pState = (PatrolState)enemy.state.state;
+                    if (pState.atitude == PatrolState.Atitude.patrol)
+                    {
                         checkCollideActors(actors[i]);
-                        //switchState(actors[i], max);
-                    
+                        switchState(actors[i], max);
+                    }
+                    else {
+                        checkCollidePursue(actors[i], rectangles, actors, resetRectangle);
+                    }
                 }
             }
         }
 
+        private void checkCollidePursue(Actor.Actor actor, IList<RectangleObjects> rectangles,
+            IList<Actor.Actor> actors, Rectangle resetRectangle)
+        {
+            Enemy enemy = (Enemy)actor;
+            bool hasCollideX = false;
+            bool hasCollideY = false;
+            foreach (Actor.Actor ac in actors)
+            {
+                if (ac.GetType() == typeof(Enemy) && enemy != (Enemy)ac)
+                {
+                    Enemy aux = (Enemy)ac;
+                    if (enemy.collideX.Intersects(aux.collideRectangle))
+                    {
+                        hasCollideX = true;
+                    }
+                    if (enemy.collideY.Intersects(aux.collideRectangle))
+                    {
+                        hasCollideY = true;
+                    }
+                }
+                if (ac.GetType() == typeof(Rock))
+                {
+                    Rock aux = (Rock)ac;
+                    if (enemy.collideX.Intersects(aux.collisionRect))
+                    {
+                        hasCollideX = true;
+                    }
+                    if (enemy.collideY.Intersects(aux.collisionRect))
+                    {
+                        hasCollideY = true;
+                    }
+                }
+            }
+            foreach (RectangleObjects ro in rectangles)
+            {
+                if (enemy.collideX.Intersects(ro.collisionRegion))
+                {
+                    hasCollideX = true;
+                }
+                if (enemy.collideY.Intersects(ro.collisionRegion))
+                {
+                    hasCollideY = true;
+                }
+            }
+            if (enemy.collideX.Intersects(resetRectangle))
+            {
+                hasCollideX = true;
+            }
+            if (enemy.collideY.Intersects(resetRectangle))
+            {
+                hasCollideY = true;
+            }
+
+            if (!hasCollideX && hasCollideY)
+            {
+                enemy.moveX( );
+            }
+            else if (hasCollideX && !hasCollideY)
+            {
+                enemy.moveY();
+            }
+            else if (!hasCollideX && !hasCollideY)
+            {
+                enemy.moveX();
+                enemy.moveY();
+            }
+            else {
+                changeDirection(enemy);
+            }
+        }
 
         private void switchState(Actor.Actor actor, Max max)
         {
             double distance = calculateDistance(actor, max);
             Enemy enemy = (Enemy)actor;
-
-            if (distance <= 200 && enemy.state.GetType() != typeof(PursueState)) {
-                enemy.state.ChangeState(new PursueState(enemy.state, enemy, max));
+            PatrolState patrol = (PatrolState)enemy.state.state;
+            if (distance <= 200 && patrol.atitude != PatrolState.Atitude.pursue) {
+                patrol.changeState(PatrolState.Atitude.pursue);
             }
         }
 

@@ -28,7 +28,7 @@ namespace GoofTroopRemake.Actor
 
         public static Random rg;
 
-        public Enemy(Texture2D texture, Vector2 position, ContentManager content, InputHandler inputHandler) : base(texture) {
+        public Enemy(Texture2D texture, Vector2 position, ContentManager content, InputHandler inputHandler, Max max) : base(texture) {
             this.position = position;
             nextMove = position;
             nextMoveX = nextMoveY = 0;
@@ -38,7 +38,7 @@ namespace GoofTroopRemake.Actor
             setSource();
             state = new StateManager.StateManager(content, inputHandler);
 
-            state.setPrimaryState(new PatrolState(state, this));
+            state.setPrimaryState(new PatrolState(state, this, max));
         }
 
         public void setActorState() {
@@ -78,13 +78,53 @@ namespace GoofTroopRemake.Actor
             position = nextMove;
         }
 
-        public void moveX() {
+        public void moveX( ) {
+            nextMoveX = modeler(nextMoveX);
             position += new Vector2(nextMoveX, 0);
+            nextMove = position;
+            if (nextMoveX > 0)
+            {
+                actorState = ActorState.moveRight;
+            }
+            else {
+                actorState = ActorState.moveLeft;
+            }
+        }
+
+        private float modeler(float nextMove)
+        {
+            if (nextMove > 2)
+            {
+                return 2;
+            }
+            else if (nextMove < -2)
+            {
+                return -2;
+            }
+            else if (nextMove < 1 && nextMove > 0)
+            {
+                return 0;
+            }
+            else if (nextMove > -1 && nextMove < 0) {
+                return 0;
+            }
+            else {
+                return nextMove;
+            }
         }
 
         public void moveY()
         {
+            nextMoveY = modeler(nextMoveY);
             position += new Vector2(0, nextMoveY);
+            nextMove = position;
+            if (nextMoveY > 0)
+            {
+                actorState = ActorState.moveDown;
+            }
+            else {
+                actorState = ActorState.moveUp;
+            }
         }
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)

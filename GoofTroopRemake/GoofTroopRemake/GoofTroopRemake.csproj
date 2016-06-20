@@ -55,7 +55,6 @@
     <Compile Include="Components\Pursue.cs" />
     <Compile Include="Components\RockHit.cs" />
     <Compile Include="EnemyState\PatrolState.cs" />
-    <Compile Include="EnemyState\PursueState.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="InputHandler.cs" />
     <Compile Include="JSON\Level.cs" />
