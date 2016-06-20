@@ -100,12 +100,20 @@ namespace GoofTroopRemake.Level
             patrol.Update(gameTime, inputHandler);
             grabThrow.update(gameTime, inputHandler);
             rockHit.Update(gameTime, inputHandler);
-            pursue.foundMax();
+            //pursue.pursue(gameTime, inputHandler, rectangles, actors, resetRectangle);
+            lose(pursue.foundMax());
             openGate = checkWin.allKilled();
 
             if (openGate) {
                 rectangles.Remove(gateRectangle);
                 victorious();
+            }
+        }
+
+        private void lose(bool dead)
+        {
+            if (dead) {
+                state.ChangeState(new YouLoseState(state));
             }
         }
 

@@ -36,12 +36,15 @@ namespace GoofTroopRemake.Components
             {
                 if (actors[i].GetType() == typeof(Enemy))
                 {
-                    actors[i].Update(gameTime, inputHandler);
-                    checkCollideActors(actors[i]);
-                    switchState(actors[i], max);
+                    Enemy enemy = (Enemy)actors[i];
+                        actors[i].Update(gameTime, inputHandler);
+                        checkCollideActors(actors[i]);
+                        //switchState(actors[i], max);
+                    
                 }
             }
         }
+
 
         private void switchState(Actor.Actor actor, Max max)
         {
@@ -59,7 +62,7 @@ namespace GoofTroopRemake.Components
             Vector2 maxOrigin = max.position + new Vector2(33, 41);
             return Math.Sqrt(Math.Pow((maxOrigin.X - actOrigin.X),2) + Math.Pow((maxOrigin.Y - actOrigin.Y), 2));
         }
-
+        
         private void checkCollideActors(Actor.Actor actor)
         {
             Enemy enemy = (Enemy)actor;

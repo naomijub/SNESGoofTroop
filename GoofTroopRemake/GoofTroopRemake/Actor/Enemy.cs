@@ -15,10 +15,14 @@ namespace GoofTroopRemake.Actor
         public StateManager.StateManager state { get; set; }
 
         public Rectangle source { get; set; }
+        public Rectangle collideX { get; set; }
+        public Rectangle collideY { get; set; }
         public Rectangle collideRectangle { get; set; }
         public Rectangle auxCollideRectangle { get; set; }
 
         public Vector2 nextMove { get; set; }
+        public float nextMoveX { get; set; }
+        public float nextMoveY { get; set; }
 
         public bool alive { get; set; }
 
@@ -27,6 +31,7 @@ namespace GoofTroopRemake.Actor
         public Enemy(Texture2D texture, Vector2 position, ContentManager content, InputHandler inputHandler) : base(texture) {
             this.position = position;
             nextMove = position;
+            nextMoveX = nextMoveY = 0;
             rg = new Random();
             alive = true;
             setActorState();
@@ -71,6 +76,15 @@ namespace GoofTroopRemake.Actor
         public override void move()
         {
             position = nextMove;
+        }
+
+        public void moveX() {
+            position += new Vector2(nextMoveX, 0);
+        }
+
+        public void moveY()
+        {
+            position += new Vector2(0, nextMoveY);
         }
 
         public override void Update(GameTime gameTime, InputHandler inputHandler)

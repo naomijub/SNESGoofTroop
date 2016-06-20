@@ -37,6 +37,7 @@ namespace GoofTroopRemake.EnemyState
         public void Enter()
         {
             auxState = enemy.actorState;
+            //Console.WriteLine("pursue state");
         }
 
         public void Leave()
@@ -51,20 +52,24 @@ namespace GoofTroopRemake.EnemyState
 
         public void Update(GameTime gameTime, InputHandler inputHandler)
         {
-            enemy.nextMove = enemy.position;
+            //enemy.nextMove = enemy.position;
             NextMoveUpdate(max, enemy);
             variateSprite(gameTime);
-            Vector2 rectPosition = enemy.nextMove + new Vector2(10, 48);
+            Vector2 rectPositionX = enemy.position + new Vector2(enemy.nextMoveX, 0) + new Vector2(10, 48);
+            Vector2 rectPositionY = enemy.position + new Vector2(0, enemy.nextMoveY) + new Vector2(10, 48);
             Vector2 enemyPos = enemy.position + new Vector2(10, 0);
-            enemy.collideRectangle = new Rectangle(rectPosition.ToPoint(), new Point(40, 47));
+            enemy.collideX = new Rectangle(rectPositionX.ToPoint(), new Point(40, 47));
+            enemy.collideY = new Rectangle(rectPositionY.ToPoint(), new Point(40, 47));
             enemy.auxCollideRectangle = new Rectangle(enemyPos.ToPoint(), new Point(44, 85));
         }
 
         private void NextMoveUpdate(Max max, Enemy enemy)
         {
             Vector2 aux = maxEnemyVector(max, enemy);
+            Console.WriteLine(aux.ToString());
             defineActorState(aux);
-            enemy.nextMove += aux;
+            enemy.nextMoveX = aux.X;
+            enemy.nextMoveY = aux.Y;
         }
 
         private double calculateDistance(Vector2 aux)
@@ -74,9 +79,9 @@ namespace GoofTroopRemake.EnemyState
 
         private void defineActorState(Vector2 aux)
         {
-            if (aux.Y >= aux.X)
+            if (Math.Abs(aux.Y) >= Math.Abs(aux.X))
             {
-                if (aux.Y <= 0)
+                if (aux.Y < 0)
                 {
                     enemy.actorState = Actor.Actor.ActorState.moveUp;
                 }
@@ -85,7 +90,7 @@ namespace GoofTroopRemake.EnemyState
                 }
             }
             else {
-                if (aux.X >= 0)
+                if (aux.X > 0)
                 {
                     enemy.actorState = Actor.Actor.ActorState.moveRight;
                 }
@@ -100,6 +105,7 @@ namespace GoofTroopRemake.EnemyState
             Vector2 maxOrigin = max.position + new Vector2(33, 41);
             Vector2 enemyOrigin = enemy.position + new Vector2(40, 47);
             Vector2 aux = new Vector2(maxOrigin.X - enemyOrigin.X, maxOrigin.Y - enemyOrigin.Y);
+            //Console.WriteLine(aux.ToString());
             int smallest = Modulus(aux);
             if (calculateDistance(aux) >= 300)
             {
@@ -111,7 +117,7 @@ namespace GoofTroopRemake.EnemyState
 
         private int Modulus(Vector2 aux)
         {
-            if (aux.X <= aux.Y) {
+            if (Math.Abs(aux.X) <= Math.Abs(aux.Y)) {
                 return (int)aux.X;
             }
             return (int)aux.Y;

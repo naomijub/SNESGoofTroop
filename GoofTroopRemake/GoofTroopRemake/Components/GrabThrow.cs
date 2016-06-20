@@ -61,7 +61,7 @@ namespace GoofTroopRemake.Components
                 {
                     if (ac.GetType() == typeof(Rock))
                     {
-                        Console.WriteLine("grabbed");
+                        //Console.WriteLine("grabbed");
                         Rock auxRock = (Rock)ac;
                         if (auxRock.collisionRect.Contains(grab)) {
                             aux.state.ChangeState(new GrabState(aux, aux.state));
