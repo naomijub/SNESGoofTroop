@@ -22,6 +22,7 @@ namespace GoofTroopRemake.EnemyState
         public Atitude auxAtitude { get; set; }
 
         private int variation = 0;
+        float currentTime = 0f;
 
         public PatrolState(StateManager.StateManager state, Enemy enemy, Max max) {
             this.enemy = enemy;
@@ -107,7 +108,14 @@ namespace GoofTroopRemake.EnemyState
         {
             if (Math.Abs(aux.X) <= Math.Abs(aux.Y))
             {
+                if (aux.X == 0.0f) {
+                    return 1;
+                }
                 return (int)aux.X;
+            }
+            if (aux.Y == 0.0f)
+            {
+                return 1;
             }
             return (int)aux.Y;
         }
@@ -124,6 +132,7 @@ namespace GoofTroopRemake.EnemyState
 
         public void variateSprite(GameTime gameTime)
         {
+            float duration = 0.1f;
             if (auxAtitude != atitude) {
                 auxAtitude = atitude;
                 variation = 0;
@@ -137,9 +146,11 @@ namespace GoofTroopRemake.EnemyState
 
             variateWalking();
 
-            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0)
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (currentTime >= duration)
             {
                 variation++;
+                currentTime -= duration;
             }
 
             if (variation >= 4) {

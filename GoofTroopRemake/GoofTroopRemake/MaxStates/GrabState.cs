@@ -21,6 +21,7 @@ namespace GoofTroopRemake.MaxStates
 
         private Actor.Actor.ActorState auxState;
         private int variation = 0;
+        float currentTime = 0f;
 
         public GrabState(Max max, StateManager.StateManager state) {
             this.max = max;
@@ -119,6 +120,7 @@ namespace GoofTroopRemake.MaxStates
 
         private void variateSprite(GameTime gameTime)
         {
+            float duration = 0.1f;
             if (auxState != max.actorState)
             {
                 variation = 0;
@@ -134,7 +136,12 @@ namespace GoofTroopRemake.MaxStates
                 case Actor.Actor.ActorState.moveLeft: max.source = new Rectangle(63 + (auxVar), 255, 63, 85); break;
             }
 
-            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0) variation++;
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (currentTime >= duration)
+            {
+                variation++;
+                currentTime -= duration;
+            }
 
             if (variation >= 6)
             {

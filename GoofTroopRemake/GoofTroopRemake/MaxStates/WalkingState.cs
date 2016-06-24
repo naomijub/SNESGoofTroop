@@ -20,6 +20,7 @@ namespace GoofTroopRemake.MaxStates
         private Actor.Actor.ActorState auxState;
 
         private int variation = 0;
+        float currentTime = 0f;
 
         public WalkingState(StateManager.StateManager state, Max max) {
             this.state = state;
@@ -51,7 +52,8 @@ namespace GoofTroopRemake.MaxStates
             max.nextMoveX = (int)max.position.X;
             NextMoveCalculator(inputHandler);
             variateSprite(gameTime);
-            max.maxRectangle = new Rectangle(max.position.ToPoint(), new Point(48, 72));
+            Vector2 maxAuxVector = max.position + new Vector2(8, 45);
+            max.maxRectangle = new Rectangle(maxAuxVector.ToPoint(), new Point(32, 27));
             
         }
         
@@ -122,17 +124,26 @@ namespace GoofTroopRemake.MaxStates
 
         public void variateSprite(GameTime gameTime)
         {
+            float duration = 0.1f;
+
             if (auxState != max.actorState)
             {
                 variation = 0;
                 auxState = max.actorState;
             }
 
-            variateWalking();
-
-            if ((gameTime.TotalGameTime.Milliseconds % 100) == 0)
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (currentTime >= duration)
             {
                 variation++;
+                currentTime -= duration;
+            }
+
+            variateWalking();
+
+            if (variation >= 5)
+            {
+                variation = 0;
             }
         }
 

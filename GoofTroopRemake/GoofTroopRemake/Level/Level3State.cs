@@ -83,14 +83,15 @@ namespace GoofTroopRemake.Level
             Actor.Actor max = new Max(content.Load<Texture2D>("MaxWalkingSprite"), content, inputHandler);
 
 
-            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 256), content, inputHandler, (Max)max));
-            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 384), content, inputHandler, (Max)max));
-            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(360, 96), content, inputHandler, (Max)max));
+            
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(672, 528)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(672, 576)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(72, 576)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(336, 240)));
             actors.Add(new Rock(content.Load<Texture2D>("rock"), new Vector2(648, 96)));
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 256), content, inputHandler, (Max)max));
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(60, 384), content, inputHandler, (Max)max));
+            actors.Add(new Enemy(content.Load<Texture2D>("EnemiesSpritesheet"), new Vector2(360, 96), content, inputHandler, (Max)max));
             actors.Add(max);
             
         }

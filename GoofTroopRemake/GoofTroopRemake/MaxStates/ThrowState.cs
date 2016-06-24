@@ -19,6 +19,7 @@ namespace GoofTroopRemake.MaxStates
         public Texture2D maxThrowTexture { get; set; }
 
         private int variation;
+        float currentTime = 0f;
 
         public ThrowState(StateManager.StateManager state, Max max)
         {
@@ -53,6 +54,8 @@ namespace GoofTroopRemake.MaxStates
 
         private void variateSprite(GameTime gameTime)
         {
+            float duration = 0.12f;
+
             int auxVar = 66 * (variation % 2);
             switch (max.idle)
             {
@@ -62,7 +65,12 @@ namespace GoofTroopRemake.MaxStates
                 case Max.IdleState.left: max.source = new Rectangle(504 + (auxVar), 255, 63, 85); break;
             }
 
-            if ((gameTime.TotalGameTime.Milliseconds % 50) == 0) variation++;
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (currentTime >= duration)
+            {
+                variation++;
+                currentTime -= duration;
+            }
 
             if (variation >= 2)
             {

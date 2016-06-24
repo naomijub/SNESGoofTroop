@@ -117,9 +117,6 @@ namespace GoofTroopRemake.Components
                 enemy.moveX();
                 enemy.moveY();
             }
-            else {
-                changeDirection(enemy);
-            }
         }
 
         private void switchState(Actor.Actor actor, Max max)

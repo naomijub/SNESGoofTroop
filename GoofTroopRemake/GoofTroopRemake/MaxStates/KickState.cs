@@ -20,6 +20,7 @@ namespace GoofTroopRemake.MaxStates
         public Texture2D maxKickTexture { get; set; }
 
         private int variation = 0;
+        float currentTime = 0f;
 
         public KickState(StateManager.StateManager state, Max max)
         {
@@ -54,8 +55,10 @@ namespace GoofTroopRemake.MaxStates
 
         private void variateSprite(GameTime gameTime)
         {
+            float duration = 0.12f;
             max.actorState = Actor.Actor.ActorState.idle;
             int auxVar = 66 * (variation % 3);
+            
             switch (max.idle)
             {
                 case Max.IdleState.up: max.source = new Rectangle((auxVar), 190, 66, 95); break;
@@ -64,13 +67,19 @@ namespace GoofTroopRemake.MaxStates
                 case Max.IdleState.left: max.source = new Rectangle((auxVar), 285, 66, 95); break;
             }
 
-            if ((gameTime.TotalGameTime.Milliseconds % 115) == 0) variation++;
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (currentTime >= duration)
+            {
+                variation++;
+                currentTime -= duration;
+            }
 
             if (variation >= 3)
             {
                 variation = 0;
                 state.ChangeState(new WalkingState(state, max));
             }
+            
         }
     }
 }
